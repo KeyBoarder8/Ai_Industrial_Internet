@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从模型到产线落地 · 工业AI算法教程 第五讲</title>
+<style>
+:root {
+  --bg: #f8f9fc;
+  --bg2: #eef0f5;
+  --bg3: #e2e4ea;
+  --text: #1a1a2e;
+  --text2: #4a5568;
+  --accent: #f43f5e;
+  --accent2: #fb7185;
+  --accent-dim: rgba(244,63,94,0.12);
+  --accent-border: rgba(244,63,94,0.35);
+  --code-bg: #eef0f5;
+  --border: rgba(0,0,0,0.08);
+  --success: #34d399;
+  --danger: #f87171;
+  --info: #60a5fa;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.85;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased; color-scheme: light;
+}
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.hero {
+  text-align: center;
+  padding: 72px 0 48px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #e8ecf4 0%, #f2f4f9 100%);
+}
+.hero .series-tag {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 4px 16px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.3;
+  background: linear-gradient(135deg, #1a1a2e 30%, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+.hero .subtitle {
+  font-size: 1.05rem;
+  color: var(--text2);
+}
+.hero .meta {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--text2);
+}
+.hero .meta span { margin: 0 8px; }
+
+.section {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--border);
+}
+.section:nth-child(even) { background: rgba(0,0,0,0.015); }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.badge {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), #e11d48);
+  color: #000;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(244,63,94,0.25);
+}
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+p { margin-bottom: 16px; color: var(--text); }
+.lead { font-size: 1.08rem; color: var(--text2); }
+.strong { color: var(--accent2); font-weight: 600; }
+code, .code {
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  background: var(--code-bg);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+
+.insight {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-dim);
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px;
+  margin: 24px 0;
+}
+.insight .insight-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.insight p { margin-bottom: 6px; color: #374151; }
+
+.warning {
+  border-left: 3px solid var(--danger);
+  background: rgba(248,113,113,0.08);
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px;
+  margin: 24px 0;
+}
+.warning .warning-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--danger);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.callout {
+  border: 1px solid var(--accent-border);
+  background: var(--accent-dim);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 24px 0;
+}
+.callout .callout-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-bottom: 8px;
+}
+.callout p { color: var(--text2); margin-bottom: 6px; }
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+.compare .col {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.compare .col h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.compare .col.bad-col h4 { color: var(--danger); }
+.compare .col.good-col h4 { color: var(--success); }
+.compare .col p { font-size: 14px; color: var(--text2); margin-bottom: 6px; }
+
+.diagram {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 12px;
+  margin: 28px 0;
+  overflow-x: auto;
+}
+.diagram svg { display: block; margin: 0 auto; }
+.diagram .caption {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 14px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+th {
+  text-align: left;
+  padding: 12px 16px;
+  background: var(--bg3);
+  color: var(--accent2);
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent-border);
+  white-space: nowrap;
+}
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+tr:hover td { background: rgba(0,0,0,0.02); }
+td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 20px 0;
+  padding: 0;
+}
+.steps li {
+  counter-increment: step;
+  padding: 12px 0 12px 52px;
+  position: relative;
+  color: var(--text2);
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 12px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 2px solid var(--accent-border);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 16px; top: 50px;
+  width: 2px;
+  height: calc(100% - 50px);
+  background: var(--border);
+}
+
+.nav-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 0 20px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.nav-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: color .2s;
+}
+.nav-footer a:hover { color: var(--accent2); text-decoration: underline; }
+.nav-footer .home { color: var(--text2); font-size: 13px; }
+
+.epilogue {
+  text-align: center;
+  padding: 48px 0 32px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.epilogue h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+.epilogue p { color: var(--text2); max-width: 560px; margin: 0 auto 12px; line-height: 1.9; }
+.epilogue .journey {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+}
+.epilogue .journey span {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+.epilogue .journey .j1 { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.epilogue .journey .j2 { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.epilogue .journey .j3 { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.epilogue .journey .j4 { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.epilogue .journey .j5 { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.7rem; }
+  .badge { width: 40px; height: 40px; font-size: 15px; border-radius: 10px; }
+  .section-header h2 { font-size: 1.2rem; }
+  .diagram { padding: 16px 4px; }
+  .compare { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="stylesheet" href="course-ui.css">
+</head>
+<body>
+<nav class="course-nav"><div class="brand">工业算法<i>×</i>入门</div><a href="index.html">课程地图</a><a href="01_从零看懂神经网络.html">回到第一讲</a><a href="06_算法与资讯雷达.html">资讯雷达</a></nav>
+<div class="page">
+
+<!-- ════════════════ HERO ════════════════ -->
+<header class="hero">
+  <div class="series-tag">工业AI算法教程 · 第五讲</div>
+  <h1>从模型到产线落地</h1>
+  <p class="subtitle">模型训练完只是起点，部署上线才是真正的战场</p>
+  <div class="meta">
+    <span>📖 25 分钟阅读</span>
+    <span>🎯 部署全链路</span>
+    <span>🏭 从实验室到产线最后一公里</span>
+  </div>
+</header>
+
+<!-- ════════════════ SECTION 1 ════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <div class="badge">01</div>
+    <h2>实验室精度 ≠ 产线效果</h2>
+  </div>
+
+  <p class="lead">很多团队都有过这样的经历：Jupyter Notebook 里模型跑出 99% 的精度，老板看了很满意，结果上了产线，精度直接掉到 70%。<strong class="strong">实验室和产线之间，隔着一整条鸿沟。</strong></p>
+
+  <p>为什么精度会"跳水"？最核心的五个原因：</p>
+
+  <div class="compare">
+    <div class="col bad-col">
+      <h4>❌ 实验室环境</h4>
+      <p>光照恒定，相机固定</p>
+      <p>数据干净，标注准确</p>
+      <p>推理速度没限制</p>
+      <p>模型跑在 RTX 4090</p>
+      <p>结果只给算法团队看</p>
+    </div>
+    <div class="col good-col">
+      <h4>✅ 产线环境</h4>
+      <p>光线随时间变化，相机震动</p>
+      <p>数据有噪声，标注可能错</p>
+      <p>必须 < 50ms 一帧</p>
+      <p>模型跑在 Jetson NPU</p>
+      <p>结果要进 MES，操作工要看</p>
+    </div>
+  </div>
+
+  <!-- ── SVG: 实验室 vs 产线 ── -->
+  <div class="diagram">
+    <svg width="720" height="340" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrR" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8" fill="#f43f5e"/>
+        </marker>
+      </defs>
+
+      <!-- Left: Lab -->
+      <rect x="20" y="20" width="300" height="300" rx="16" fill="#f0f1f5" stroke="#c8cad0" stroke-width="1.5"/>
+      <text x="170" y="52" text-anchor="middle" fill="#059669" font-size="15" font-weight="700">🔬 实验室环境</text>
+
+      <rect x="50" y="72" width="240" height="36" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="170" y="95" text-anchor="middle" fill="#6b7280" font-size="12">💡 恒定照明 · 无震动 · 4K图像</text>
+
+      <rect x="50" y="120" width="240" height="36" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="170" y="143" text-anchor="middle" fill="#6b7280" font-size="12">📊 干净数据 · 人工精选样本</text>
+
+      <rect x="50" y="168" width="240" height="36" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="170" y="191" text-anchor="middle" fill="#6b7280" font-size="12">🖥️ RTX 4090 · 推理无时限</text>
+
+      <rect x="50" y="216" width="240" height="36" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="170" y="239" text-anchor="middle" fill="#6b7280" font-size="12">✅ 精度 99.2%</text>
+
+      <rect x="80" y="268" width="180" height="34" rx="8" fill="rgba(52,211,153,0.12)" stroke="#059669" stroke-width="1.5"/>
+      <text x="170" y="290" text-anchor="middle" fill="#059669" font-size="13" font-weight="700">可控 · 干净 · 充裕</text>
+
+      <!-- Right: Factory -->
+      <rect x="400" y="20" width="300" height="300" rx="16" fill="#f0f1f5" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <text x="550" y="52" text-anchor="middle" fill="#f43f5e" font-size="15" font-weight="700">🏭 产线环境</text>
+
+      <rect x="430" y="72" width="240" height="36" rx="8" fill="#1a1a24" stroke="#f43f5e" stroke-width="1" opacity="0.85"/>
+      <text x="550" y="95" text-anchor="middle" fill="#6b7280" font-size="12">🌅 光线变化 · 设备震动 · 反光</text>
+
+      <rect x="430" y="120" width="240" height="36" rx="8" fill="#1a1a24" stroke="#f43f5e" stroke-width="1" opacity="0.85"/>
+      <text x="550" y="143" text-anchor="middle" fill="#6b7280" font-size="12">📊 噪声偏移 · 标注不均 · 漏标</text>
+
+      <rect x="430" y="168" width="240" height="36" rx="8" fill="#1a1a24" stroke="#f43f5e" stroke-width="1" opacity="0.85"/>
+      <text x="550" y="191" text-anchor="middle" fill="#6b7280" font-size="12">📱 Jetson NPU · 必须 &lt; 50ms</text>
+
+      <rect x="430" y="216" width="240" height="36" rx="8" fill="#1a1a24" stroke="#f43f5e" stroke-width="1" opacity="0.85"/>
+      <text x="550" y="239" text-anchor="middle" fill="#dc2626" font-size="12">⚠️ 精度掉到 70%</text>
+
+      <rect x="460" y="268" width="180" height="34" rx="8" fill="rgba(244,63,94,0.12)" stroke="#f43f5e" stroke-width="1.5"/>
+      <text x="550" y="290" text-anchor="middle" fill="#f43f5e" font-size="13" font-weight="700">多变 · 有限 · 严苛</text>
+
+      <!-- Arrow between -->
+      <line x1="340" y1="170" x2="400" y2="170" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrR)"/>
+      <text x="370" y="160" text-anchor="middle" fill="#f43f5e" font-size="11" font-weight="700">鸿沟</text>
+    </svg>
+    <div class="caption">图 1：实验室 vs 产线 —— 环境差距导致精度跳水，这才是部署真正的起点</div>
+  </div>
+
+  <p>行业里有个残酷的统计：<strong class="strong">只有约 30% 的 PoC（概念验证）模型最终成功上了产线</strong>。剩下的 70%，大部分不是败给了算法，而是败给了工程化。</p>
+
+  <p>这五大"杀手"按严重程度排序：</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>杀手</th>
+          <th>典型表现</th>
+          <th>致命程度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>数据漂移</td>
+          <td>换批材料、换季节，模型就不是那个模型了</td>
+          <td style="color:#f87171;">★★★★★</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>实时性要求</td>
+          <td>产线每秒走 10 个产品，推理必须 ≤50ms</td>
+          <td style="color:#f87171;">★★★★</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>边缘算力限制</td>
+          <td>NPU 内存只有 8GB，大模型塞不进去</td>
+          <td style="color:#fbbf24;">★★★★</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>系统集成复杂</td>
+          <td>PLC → SCADA → MES → HMI，每一步都有坑</td>
+          <td style="color:#fbbf24;">★★★</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>人为因素</td>
+          <td>操作工不理解结果 → 忽略报警 → 系统形同虚设</td>
+          <td style="color:#60a5fa;">★★★</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p><strong>PoC 阶段的精度，只是"驾照笔试"通过；产线部署，才是"真车上路"。</strong>能在实验室跑通不等于能用。真正要关注的是：在产线实际条件下，模型还能不能扛住。</p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION 2 ════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <div class="badge">02</div>
+    <h2>模型减肥术：量化与压缩</h2>
+  </div>
+
+  <p class="lead">产线上的计算资源是有限的。你的模型就像一个 200 斤的壮汉，跑百米当然快不了 —— <strong class="strong">得减肥，还得保证减了肥力气不能差太多。</strong></p>
+
+  <p>边缘设备（比如 Jetson Orin）的显存只有 8~32GB，而一个 ResNet-50 模型用 FP32 精度就要占约 100MB —— 看着不大？那 YOLOv8-x 呢？EfficientNet-L2 呢？更不用说 Transformer 系列。加上同时要跑 4~8 路摄像头推理，<strong class="strong">内存分分钟炸</strong>。</p>
+
+  <p>所以我们需要<strong>量化</strong> —— 用更少的位数来表示模型的权重。</p>
+
+  <!-- ── SVG: 量化管线 ── -->
+  <div class="diagram">
+    <svg width="720" height="360" viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+      <!-- FP32 -->
+      <g transform="translate(30, 30)">
+        <rect x="0" y="0" width="180" height="260" rx="14" fill="#f0f1f5" stroke="#2563eb" stroke-width="2"/>
+        <text x="90" y="30" text-anchor="middle" fill="#2563eb" font-size="15" font-weight="700">FP32</text>
+        <text x="90" y="50" text-anchor="middle" fill="#6b7280" font-size="11">原始精度</text>
+
+        <rect x="20" y="65" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="85" text-anchor="middle" fill="#1a1a2e" font-size="12">模型体积: <tspan fill="#2563eb" font-weight="700">100%</tspan></text>
+
+        <rect x="20" y="105" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="125" text-anchor="middle" fill="#1a1a2e" font-size="12">推理速度: <tspan fill="#d97706" font-weight="700">基准</tspan></text>
+
+        <rect x="20" y="145" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="165" text-anchor="middle" fill="#1a1a2e" font-size="12">精度损失: <tspan fill="#059669" font-weight="700">0%</tspan></text>
+
+        <!-- Bar chart -->
+        <rect x="20" y="195" width="140" height="12" rx="3" fill="#ffffff"/>
+        <rect x="20" y="195" width="140" height="12" rx="3" fill="#2563eb" opacity="0.85"/>
+        <text x="90" y="225" text-anchor="middle" fill="#6b7280" font-size="10">体积</text>
+
+        <rect x="20" y="235" width="140" height="12" rx="3" fill="#ffffff"/>
+        <rect x="20" y="235" width="70" height="12" rx="3" fill="#2563eb" opacity="0.85"/>
+        <text x="90" y="255" text-anchor="middle" fill="#6b7280" font-size="10">速度</text>
+      </g>
+
+      <!-- Arrow FP32→FP16 -->
+      <line x1="220" y1="160" x2="260" y2="160" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrR)"/>
+      <text x="240" y="150" text-anchor="middle" fill="#e11d48" font-size="10" font-weight="600">×0.5</text>
+
+      <!-- FP16 -->
+      <g transform="translate(270, 30)">
+        <rect x="0" y="0" width="180" height="260" rx="14" fill="#f0f1f5" stroke="#fbbf24" stroke-width="2"/>
+        <text x="90" y="30" text-anchor="middle" fill="#d97706" font-size="15" font-weight="700">FP16</text>
+        <text x="90" y="50" text-anchor="middle" fill="#6b7280" font-size="11">半精度</text>
+
+        <rect x="20" y="65" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="85" text-anchor="middle" fill="#1a1a2e" font-size="12">模型体积: <tspan fill="#d97706" font-weight="700">50%</tspan></text>
+
+        <rect x="20" y="105" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="125" text-anchor="middle" fill="#1a1a2e" font-size="12">推理速度: <tspan fill="#059669" font-weight="700">~2× 快</tspan></text>
+
+        <rect x="20" y="145" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="165" text-anchor="middle" fill="#1a1a2e" font-size="12">精度损失: <tspan fill="#059669" font-weight="700">~0.1%</tspan></text>
+
+        <rect x="20" y="195" width="140" height="12" rx="3" fill="#ffffff"/>
+        <rect x="20" y="195" width="70" height="12" rx="3" fill="#d97706" opacity="0.85"/>
+        <text x="90" y="225" text-anchor="middle" fill="#6b7280" font-size="10">体积</text>
+
+        <rect x="20" y="235" width="140" height="12" rx="3" fill="#ffffff"/>
+        <rect x="20" y="235" width="105" height="12" rx="3" fill="#d97706" opacity="0.85"/>
+        <text x="90" y="255" text-anchor="middle" fill="#6b7280" font-size="10">速度</text>
+      </g>
+
+      <!-- Arrow FP16→INT8 -->
+      <line x1="460" y1="160" x2="500" y2="160" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrR)"/>
+      <text x="480" y="150" text-anchor="middle" fill="#e11d48" font-size="10" font-weight="600">×0.5</text>
+
+      <!-- INT8 -->
+      <g transform="translate(510, 30)">
+        <rect x="0" y="0" width="180" height="260" rx="14" fill="#f0f1f5" stroke="#f43f5e" stroke-width="2"/>
+        <text x="90" y="30" text-anchor="middle" fill="#f43f5e" font-size="15" font-weight="700">INT8</text>
+        <text x="90" y="50" text-anchor="middle" fill="#6b7280" font-size="11">8位整数</text>
+
+        <rect x="20" y="65" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="85" text-anchor="middle" fill="#1a1a2e" font-size="12">模型体积: <tspan fill="#f43f5e" font-weight="700">25%</tspan></text>
+
+        <rect x="20" y="105" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="125" text-anchor="middle" fill="#1a1a2e" font-size="12">推理速度: <tspan fill="#059669" font-weight="700">~4× 快</tspan></text>
+
+        <rect x="20" y="145" width="140" height="30" rx="6" fill="#ffffff" stroke="#c8cad0" stroke-width="1"/>
+        <text x="90" y="165" text-anchor="middle" fill="#1a1a2e" font-size="12">精度损失: <tspan fill="#d97706" font-weight="700">~1%</tspan></text>
+
+        <rect x="20" y="195" width="140" height="12" rx="3" fill="#ffffff"/>
+        <rect x="20" y="195" width="35" height="12" rx="3" fill="#f43f5e" opacity="0.85"/>
+        <text x="90" y="225" text-anchor="middle" fill="#6b7280" font-size="10">体积</text>
+
+        <rect x="20" y="235" width="140" height="12" rx="3" fill="#ffffff"/>
+        <rect x="20" y="235" width="130" height="12" rx="3" fill="#f43f5e" opacity="0.85"/>
+        <text x="90" y="255" text-anchor="middle" fill="#6b7280" font-size="10">速度</text>
+      </g>
+
+      <!-- Bottom annotation -->
+      <rect x="80" y="305" width="560" height="42" rx="10" fill="rgba(244,63,94,0.08)" stroke="#f43f5e" stroke-width="1"/>
+      <text x="360" y="331" text-anchor="middle" fill="#e11d48" font-size="12" font-weight="600">用 75% 的体积换取 4× 推理加速，精度仅损失 ~1% —— 这笔账值得</text>
+    </svg>
+    <div class="caption">图 2：量化管线 —— FP32 → FP16 → INT8，体积减到 1/4，速度提升 4 倍</div>
+  </div>
+
+  <h3 style="color:#1a1a2e; margin:28px 0 12px; font-size:1.1rem;">两种量化方式</h3>
+
+  <div class="compare">
+    <div class="col">
+      <h4 style="color:#60a5fa;">PTQ · 训练后量化</h4>
+      <p><strong>原理：</strong>模型训练完了，拿几百张"代表性图片"校准一下，直接把权重从 FP32 转成 INT8</p>
+      <p><strong>优点：</strong>不需要重新训练，几小时搞定</p>
+      <p><strong>缺点：</strong>精度损失可能稍大（1~3%）</p>
+      <p><strong>适合：</strong>快速上线，精度要求不是极致的场景</p>
+    </div>
+    <div class="col">
+      <h4 style="color:#fb7185;">QAT · 量化感知训练</h4>
+      <p><strong>原理：</strong>训练时就"假装"自己会被量化，让模型提前适应低精度</p>
+      <p><strong>优点：</strong>量化后精度损失最小（<1%）</p>
+      <p><strong>缺点：</strong>需要重新训练，时间长</p>
+      <p><strong>适合：</strong>精度敏感、必须 INT8 的关键场景</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">🔧 还有 pruning（剪枝）</div>
+    <p>除了量化，还有一种"减肥"方式叫<strong>剪枝</strong>：找出网络里不重要的权重，直接删掉。就像修剪树枝 —— 砍掉细枝末节，主干更粗壮。</p>
+    <p>剪枝后的模型变<strong>稀疏</strong>（很多权重为 0），体积更小、推理更快。常和量化配合使用：<code>剪枝 → 量化 → 部署</code>，效果叠加。</p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p><strong>先用 PTQ 试水</strong>，看精度掉多少。如果掉在可接受范围（<2%），直接上线；如果掉太多，再考虑 QAT。别上来就 QAT —— 浪费训练时间。</p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION 3 ════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <div class="badge">03</div>
+    <h2>边缘部署架构：算力怎么摆</h2>
+  </div>
+
+  <p class="lead">模型减肥之后，接下来的问题是：<strong class="strong">算力放在哪里？</strong>全放云端，延迟受不了；全放边缘，算力不够。答案是分层部署。</p>
+
+  <!-- ── SVG: 三层架构 ── -->
+  <div class="diagram">
+    <svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrGy" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8" fill="#9ca3af"/>
+        </marker>
+        <marker id="arrRose" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8" fill="#f43f5e"/>
+        </marker>
+      </defs>
+
+      <!-- Tier 1: Camera-embedded -->
+      <rect x="20" y="20" width="210" height="370" rx="16" fill="#f0f1f5" stroke="#059669" stroke-width="1.5"/>
+      <rect x="30" y="32" width="190" height="28" rx="6" fill="rgba(52,211,153,0.12)"/>
+      <text x="125" y="52" text-anchor="middle" fill="#059669" font-size="14" font-weight="700">📷 摄像头内嵌</text>
+
+      <rect x="40" y="75" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="125" y="96" text-anchor="middle" fill="#1a1a2e" font-size="11">ISP 芯片 / 小型 SoC</text>
+
+      <rect x="40" y="120" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="125" y="141" text-anchor="middle" fill="#1a1a2e" font-size="11">模型: MobileNet, NanoDet</text>
+
+      <rect x="40" y="165" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="125" y="186" text-anchor="middle" fill="#1a1a2e" font-size="11">算力: ~0.5 TOPS</text>
+
+      <rect x="40" y="210" width="170" height="46" rx="8" fill="rgba(52,211,153,0.08)" stroke="#c8cad0" stroke-width="1"/>
+      <text x="125" y="230" text-anchor="middle" fill="#059669" font-size="11" font-weight="600">延迟: <5ms</text>
+      <text x="125" y="248" text-anchor="middle" fill="#6b7280" font-size="10">成本: ¥200/路</text>
+
+      <rect x="40" y="275" width="170" height="100" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="125" y="298" text-anchor="middle" fill="#6b7280" font-size="10">适合场景:</text>
+      <text x="125" y="318" text-anchor="middle" fill="#1a1a2e" font-size="11">· 简单分类（OK/NG）</text>
+      <text x="125" y="338" text-anchor="middle" fill="#1a1a2e" font-size="11">· 超高速响应需求</text>
+      <text x="125" y="358" text-anchor="middle" fill="#1a1a2e" font-size="11">· 大量点位低成本覆盖</text>
+
+      <!-- Tier 2: Edge Box -->
+      <rect x="255" y="20" width="210" height="370" rx="16" fill="#f0f1f5" stroke="#fbbf24" stroke-width="1.5"/>
+      <rect x="265" y="32" width="190" height="28" rx="6" fill="rgba(251,191,36,0.12)"/>
+      <text x="360" y="52" text-anchor="middle" fill="#d97706" font-size="14" font-weight="700">📦 边缘计算盒</text>
+
+      <rect x="275" y="75" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="360" y="96" text-anchor="middle" fill="#1a1a2e" font-size="11">Jetson / 华为Atlas / RK3588</text>
+
+      <rect x="275" y="120" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="360" y="141" text-anchor="middle" fill="#1a1a2e" font-size="11">模型: YOLOv8-s, ResNet-50</text>
+
+      <rect x="275" y="165" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="360" y="186" text-anchor="middle" fill="#1a1a2e" font-size="11">算力: 20~275 TOPS</text>
+
+      <rect x="275" y="210" width="170" height="46" rx="8" fill="rgba(251,191,36,0.08)" stroke="#c8cad0" stroke-width="1"/>
+      <text x="360" y="230" text-anchor="middle" fill="#d97706" font-size="11" font-weight="600">延迟: 10~50ms</text>
+      <text x="360" y="248" text-anchor="middle" fill="#6b7280" font-size="10">成本: ¥2000~8000/台</text>
+
+      <rect x="275" y="275" width="170" height="100" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="360" y="298" text-anchor="middle" fill="#6b7280" font-size="10">适合场景:</text>
+      <text x="360" y="318" text-anchor="middle" fill="#1a1a2e" font-size="11">· 目标检测 + 分类</text>
+      <text x="360" y="338" text-anchor="middle" fill="#1a1a2e" font-size="11">· 4~8 路相机并行</text>
+      <text x="360" y="358" text-anchor="middle" fill="#1a1a2e" font-size="11">· 主力部署方案 ⭐</text>
+
+      <!-- Tier 3: Cloud -->
+      <rect x="490" y="20" width="210" height="370" rx="16" fill="#f0f1f5" stroke="#7c3aed" stroke-width="1.5"/>
+      <rect x="500" y="32" width="190" height="28" rx="6" fill="rgba(167,139,250,0.12)"/>
+      <text x="595" y="52" text-anchor="middle" fill="#7c3aed" font-size="14" font-weight="700">☁️ 云端 GPU</text>
+
+      <rect x="510" y="75" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="595" y="96" text-anchor="middle" fill="#1a1a2e" font-size="11">A100 / V100 集群</text>
+
+      <rect x="510" y="120" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="595" y="141" text-anchor="middle" fill="#1a1a2e" font-size="11">大模型 / 训练 / 重推理</text>
+
+      <rect x="510" y="165" width="170" height="32" rx="6" fill="#ffffff"/>
+      <text x="595" y="186" text-anchor="middle" fill="#1a1a2e" font-size="11">算力: 无上限</text>
+
+      <rect x="510" y="210" width="170" height="46" rx="8" fill="rgba(167,139,250,0.08)" stroke="#c8cad0" stroke-width="1"/>
+      <text x="595" y="230" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600">延迟: 100ms~秒级</text>
+      <text x="595" y="248" text-anchor="middle" fill="#6b7280" font-size="10">成本: 按量计费</text>
+
+      <rect x="510" y="275" width="170" height="100" rx="8" fill="#1a1a24" stroke="#c8cad0" stroke-width="1"/>
+      <text x="595" y="298" text-anchor="middle" fill="#6b7280" font-size="10">适合场景:</text>
+      <text x="595" y="318" text-anchor="middle" fill="#1a1a2e" font-size="11">· 模型训练 / 重训练</text>
+      <text x="595" y="338" text-anchor="middle" fill="#1a1a2e" font-size="11">· 批量离线分析</text>
+      <text x="595" y="358" text-anchor="middle" fill="#1a1a2e" font-size="11">· 数据存储 / 可视化</text>
+
+      <!-- Connecting arrows -->
+      <line x1="230" y1="200" x2="255" y2="200" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrGy)"/>
+      <line x1="465" y1="200" x2="490" y2="200" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrGy)"/>
+
+      <!-- Data flow label -->
+      <text x="360" y="408" text-anchor="middle" fill="#9ca3af" font-size="10">摄像头内嵌 → 边缘盒子 → 云端 ｜ 延迟递增，算力递增，成本递增</text>
+    </svg>
+    <div class="caption">图 3：三层部署架构 —— 按延迟需求和模型大小分层，边缘盒子是主力</div>
+  </div>
+
+  <p>最常见的方案是<strong class="strong">边缘-云混合</strong>：轻量推理放在边缘盒子（满足实时性），重型训练和数据分析放在云端。边缘的推理结果通过 MQTT/OPC-UA 汇报给 MES 系统，同时原始图像定期上传到云端用于模型重训练。</p>
+
+  <div class="callout">
+    <div class="callout-title">📐 选型决策依据</div>
+    <p><strong>延迟要求 &lt; 10ms？</strong> → 摄像头内嵌或边缘盒子直连</p>
+    <p><strong>模型 &gt; 500MB？</strong> → 边缘高端盒子或云端</p>
+    <p><strong>需同时推理 8 路以上？</strong> → Jetson AGX Orin 或多盒子集群</p>
+    <p><strong>数据不能出工厂？</strong> → 纯边缘，云端仅做训练环境</p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p>别一上来就考虑云端部署。<strong>工业场景的默认选择是边缘</strong>：延迟可控、数据不出厂、断网也能跑。云端只做"幕后"的训练和分析。</p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION 4 ════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <div class="badge">04</div>
+    <h2>数据闭环：部署不是终点</h2>
+  </div>
+
+  <p class="lead">很多人以为模型部署上线就完事了。不是的 —— <strong class="strong">部署才是开始</strong>。因为产线在不断变化：换了批次的原材料，来了新的缺陷类型，季节变了光照也变了。模型会"漂移"。</p>
+
+  <p>什么是<strong class="strong">模型漂移</strong>？简单说：你的模型是拿过去的经验训练的，但未来不按过去的套路来。</p>
+
+  <ul style="margin-left:20px; color:var(--text2); line-height:2.2;">
+    <li>原来只有 3 种缺陷，产线升级后出现了<strong>第 4 种</strong></li>
+    <li>冬天的照片和夏天的照片，<strong>光照完全不同</strong></li>
+    <li>供应商换了，表面纹理变了，原来的"正常"不像"正常"了</li>
+  </ul>
+
+  <p>所以你需要一个<strong>数据闭环</strong>：部署 → 监控 → 收集失败案例 → 标注 → 重训练 → 重新部署。</p>
+
+  <!-- ── SVG: 数据闭环 ── -->
+  <div class="diagram">
+    <svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrLoop" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10" fill="#f43f5e"/>
+        </marker>
+      </defs>
+
+      <!-- Center circle for "持续循环" -->
+      <circle cx="360" cy="210" r="55" fill="#1a1a24" stroke="#f43f5e" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="360" y="205" text-anchor="middle" fill="#f43f5e" font-size="14" font-weight="700">持续</text>
+      <text x="360" y="225" text-anchor="middle" fill="#f43f5e" font-size="14" font-weight="700">循环</text>
+
+      <!-- Node 1: Deploy (top) -->
+      <rect x="280" y="30" width="160" height="60" rx="12" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+      <text x="360" y="55" text-anchor="middle" fill="#059669" font-size="14" font-weight="700">🚀 部署上线</text>
+      <text x="360" y="75" text-anchor="middle" fill="#6b7280" font-size="10">模型推到边缘盒子</text>
+
+      <!-- Arrow 1→2 -->
+      <path d="M430,60 Q520,60 520,130" fill="none" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrLoop)"/>
+
+      <!-- Node 2: Monitor (right) -->
+      <rect x="460" y="130" width="160" height="60" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+      <text x="540" y="155" text-anchor="middle" fill="#2563eb" font-size="14" font-weight="700">📊 实时监控</text>
+      <text x="540" y="175" text-anchor="middle" fill="#6b7280" font-size="10">精度/延迟/异常率</text>
+
+      <!-- Arrow 2→3 -->
+      <path d="M540,190 Q540,260 480,290" fill="none" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrLoop)"/>
+
+      <!-- Node 3: Collect (bottom-right) -->
+      <rect x="350" y="280" width="160" height="60" rx="12" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+      <text x="430" y="305" text-anchor="middle" fill="#d97706" font-size="14" font-weight="700">📦 收集失败</text>
+      <text x="430" y="325" text-anchor="middle" fill="#6b7280" font-size="10">抓取误判/不确定样本</text>
+
+      <!-- Arrow 3→4 -->
+      <path d="M350,310 Q270,310 250,310" fill="none" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrLoop)"/>
+
+      <!-- Node 4: Label+Retrain (bottom-left) -->
+      <rect x="100" y="280" width="160" height="60" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+      <text x="180" y="305" text-anchor="middle" fill="#7c3aed" font-size="14" font-weight="700">🏷️ 标注+重训练</text>
+      <text x="180" y="325" text-anchor="middle" fill="#6b7280" font-size="10">人工标注 → 加入训练集</text>
+
+      <!-- Arrow 4→5 -->
+      <path d="M180,280 Q180,210 180,150" fill="none" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrLoop)"/>
+
+      <!-- Node 5: Verify (left) -->
+      <rect x="100" y="100" width="160" height="60" rx="12" fill="#ffffff" stroke="#f43f5e" stroke-width="2"/>
+      <text x="180" y="125" text-anchor="middle" fill="#f43f5e" font-size="14" font-weight="700">✅ 验证通过</text>
+      <text x="180" y="145" text-anchor="middle" fill="#6b7280" font-size="10">影子模式 / A/B 测试</text>
+
+      <!-- Arrow 5→1 -->
+      <path d="M260,120 Q270,60 280,60" fill="none" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrLoop)"/>
+
+      <!-- Active Learning annotation -->
+      <rect x="140" y="370" width="440" height="38" rx="8" fill="rgba(244,63,94,0.08)" stroke="#f43f5e" stroke-width="1"/>
+      <text x="360" y="394" text-anchor="middle" fill="#e11d48" font-size="12" font-weight="600">💡 主动学习：让模型自己挑"最不确定"的样本标注，标注效率提升 5~10×</text>
+    </svg>
+    <div class="caption">图 4：数据闭环 —— 部署不是终点，持续监控 + 收集 + 重训练才能让模型保鲜</div>
+  </div>
+
+  <h3 style="color:#1a1a2e; margin:28px 0 12px; font-size:1.1rem;">影子模式 & A/B 测试</h3>
+
+  <p>新训练的模型不能直接替换旧模型 —— 万一更差呢？所以需要<strong class="strong">影子模式</strong>：</p>
+
+  <div class="compare">
+    <div class="col">
+      <h4 style="color:#a78bfa;">🌑 影子模式</h4>
+      <p>新旧模型<strong>同时运行</strong>，但只有旧模型的结果真正生效</p>
+      <p>新模型的输出做记录和对比，不等效就人工审查</p>
+      <p><strong>优点：</strong>零风险，对比充分</p>
+    </div>
+    <div class="col">
+      <h4 style="color:#fbbf24;">⚖️ A/B 测试</h4>
+      <p>把产线产品<strong>随机分两组</strong>，一组用旧模型，一组用新模型</p>
+      <p>跑一周后对比漏检率和误报率</p>
+      <p><strong>优点：</strong>直接看真实效果</p>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p><strong>很多团队上线后就不管了</strong>，模型渐渐变差却没有人知道。数据闭环的核心不是"重训练"这个动作，而是<strong>持续监控</strong>的意识 —— 你得先知道模型在变差，才能触发后续动作。</p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION 5 ════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <div class="badge">05</div>
+    <h2>MLOps：让部署成为日常而不是事件</h2>
+  </div>
+
+  <p class="lead">一个模型上线，手动操作一堆文件，手动拷贝权重，手动在 NPU 上部署 —— 这就像每次发布软件都要手动编译、手动拷贝到服务器。<strong class="strong">DevOps 解决了软件的问题，MLOps 要解决模型的问题。</strong></p>
+
+  <p>MLOps = DevOps + 数据版本 + 模型版本 + 实验追踪 + 自动部署。说白了就是：<strong>让模型的训练、测试、部署变成一条自动化的流水线</strong>，而不是每次都靠人肉操作。</p>
+
+  <!-- ── SVG: MLOps 成熟度阶梯 ── -->
+  <div class="diagram">
+    <svg width="720" height="380" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrUp" markerWidth="10" markerHeight="10" refX="5" refY="10" orient="auto">
+          <path d="M0,10 L5,0 L10,10" fill="#f43f5e"/>
+        </marker>
+      </defs>
+
+      <!-- Level 0 -->
+      <rect x="30" y="260" width="200" height="100" rx="14" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5"/>
+      <text x="130" y="290" text-anchor="middle" fill="#6b7280" font-size="15" font-weight="700">Level 0</text>
+      <text x="130" y="312" text-anchor="middle" fill="#9ca3af" font-size="12">手动一切</text>
+      <text x="130" y="332" text-anchor="middle" fill="#9ca3af" font-size="10">脚本训练 → 手动拷贝 → 手动部署</text>
+      <text x="130" y="350" text-anchor="middle" fill="#9ca3af" font-size="10">（大多数工厂的现状）</text>
+
+      <!-- Arrow 0→1 -->
+      <path d="M230,290 L270,240" fill="none" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrUp)"/>
+
+      <!-- Level 1 -->
+      <rect x="260" y="140" width="200" height="110" rx="14" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+      <text x="360" y="168" text-anchor="middle" fill="#d97706" font-size="15" font-weight="700">Level 1</text>
+      <text x="360" y="190" text-anchor="middle" fill="#1a1a2e" font-size="12">训练自动化，部署手动</text>
+      <rect x="280" y="202" width="160" height="36" rx="6" fill="#1a1a24"/>
+      <text x="360" y="218" text-anchor="middle" fill="#6b7280" font-size="10">✅ 实验追踪 (MLflow)</text>
+      <text x="360" y="234" text-anchor="middle" fill="#6b7280" font-size="10">✅ 模型注册中心</text>
+
+      <!-- Arrow 1→2 -->
+      <path d="M460,180 L500,120" fill="none" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrUp)"/>
+
+      <!-- Level 2 -->
+      <rect x="490" y="20" width="200" height="120" rx="14" fill="#ffffff" stroke="#f43f5e" stroke-width="2.5"/>
+      <text x="590" y="48" text-anchor="middle" fill="#f43f5e" font-size="15" font-weight="700">Level 2</text>
+      <text x="590" y="70" text-anchor="middle" fill="#1a1a2e" font-size="12">全流程 CI/CD</text>
+      <rect x="510" y="82" width="160" height="50" rx="6" fill="#1a1a24"/>
+      <text x="590" y="98" text-anchor="middle" fill="#6b7280" font-size="10">✅ 自动重训练触发</text>
+      <text x="590" y="114" text-anchor="middle" fill="#6b7280" font-size="10">✅ 自动测试 + 灰度部署</text>
+      <text x="590" y="130" text-anchor="middle" fill="#6b7280" font-size="10">✅ 监控 + 自动回滚</text>
+
+      <!-- Capability annotations on the right -->
+      <g transform="translate(710, 60)">
+        <text x="0" y="0" fill="#f43f5e" font-size="10" font-weight="600" text-anchor="end" transform="rotate(-90, 0, 0)">自动化程度 →</text>
+      </g>
+
+      <!-- Bottom legend -->
+      <rect x="150" y="330" width="420" height="38" rx="8" fill="rgba(244,63,94,0.08)" stroke="#f43f5e" stroke-width="1"/>
+      <text x="360" y="354" text-anchor="middle" fill="#e11d48" font-size="12" font-weight="600">🎯 工厂目标：先到 Level 1，再逐步迈向 Level 2</text>
+    </svg>
+    <div class="caption">图 5：MLOps 成熟度阶梯 —— Level 0 到 Level 2，越往上越自动化</div>
+  </div>
+
+  <p>MLOps 的几个关键组件：</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>组件</th>
+          <th>干什么</th>
+          <th>代表工具</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>实验追踪</td>
+          <td>记录每次训练的超参数、指标、权重</td>
+          <td>MLflow, Weights & Biases</td>
+        </tr>
+        <tr>
+          <td>模型注册中心</td>
+          <td>管理所有模型版本，哪个是生产版、哪个是测试版</td>
+          <td>MLflow Model Registry</td>
+        </tr>
+        <tr>
+          <td>数据版本化</td>
+          <td>像 Git 管代码一样管数据集</td>
+          <td>DVC, LakeFS</td>
+        </tr>
+        <tr>
+          <td>模型监控</td>
+          <td>线上实时监测精度、延迟、漂移</td>
+          <td>Evidently, Grafana</td>
+        </tr>
+        <tr>
+          <td>CI/CD 流水线</td>
+          <td>自动训练 → 测试 → 部署 → 回滚</td>
+          <td>Jenkins, GitLab CI</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p>别一上来就搞 Level 2。先从<strong>实验追踪</strong>开始 —— 每次训练自动记录参数和结果，光是这一步就能解决"上次那个效果好的模型到底怎么训的"的问题。然后逐步加模型注册、数据版本化……<strong>渐进式建设，不要一步到位。</strong></p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION 6 ════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <div class="badge">06</div>
+    <h2>产线集成：打通最后一公里</h2>
+  </div>
+
+  <p class="lead">有时候，模型本身没问题，精度也够，速度也行 —— <strong class="strong">但就是上不了线</strong>。因为模型只是整个系统的一环，它得跟相机、网络、MES、操作工全部接上才行。这一"接"，才是最磨人的。</p>
+
+  <p>产线集成的几个"真拦路虎"：</p>
+
+  <!-- ── SVG: 集成栈 ── -->
+  <div class="diagram">
+    <svg width="720" height="480" viewBox="0 0 720 480" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrInt" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8" fill="#e11d48"/>
+        </marker>
+      </defs>
+
+      <!-- Layer 1: 物理传感器层 -->
+      <rect x="70" y="20" width="580" height="72" rx="12" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+      <text x="360" y="48" text-anchor="middle" fill="#059669" font-size="14" font-weight="700">📷 物理层 · 传感器+光照</text>
+      <text x="360" y="70" text-anchor="middle" fill="#6b7280" font-size="11">工业相机 + 环形光源 + 偏振镜 + 安装支架 → 稳定的图像输入</text>
+      <text x="360" y="86" text-anchor="middle" fill="#9ca3af" font-size="10">⚠️ 光照变化 / 反光 / 震动偏移 / 积灰 → 最容易被忽略的问题</text>
+
+      <!-- Arrow -->
+      <line x1="360" y1="92" x2="360" y2="110" stroke="#e11d48" stroke-width="1.5" marker-end="url(#arrInt)"/>
+
+      <!-- Layer 2: 推理引擎 -->
+      <rect x="70" y="110" width="580" height="72" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+      <text x="360" y="138" text-anchor="middle" fill="#2563eb" font-size="14" font-weight="700">🧠 推理层 · 模型引擎</text>
+      <text x="360" y="160" text-anchor="middle" fill="#6b7280" font-size="11">TensorRT / ONNX Runtime / OpenVINO → 量化模型 + 4~8路并行推理</text>
+      <text x="360" y="176" text-anchor="middle" fill="#9ca3af" font-size="10">⚠️ NPU 算子兼容性 / 内存泄漏 / 推理超时</text>
+
+      <!-- Arrow -->
+      <line x1="360" y1="182" x2="360" y2="200" stroke="#e11d48" stroke-width="1.5" marker-end="url(#arrInt)"/>
+
+      <!-- Layer 3: 工控协议层 -->
+      <rect x="70" y="200" width="580" height="72" rx="12" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+      <text x="360" y="228" text-anchor="middle" fill="#d97706" font-size="14" font-weight="700">🔌 协议层 · PLC/SCADA 通信</text>
+      <text x="360" y="250" text-anchor="middle" fill="#6b7280" font-size="11">OPC-UA / Modbus TCP / MQTT / Profinet → 把推理结果写入工控网络</text>
+      <text x="360" y="266" text-anchor="middle" fill="#9ca3af" font-size="10">⚠️ 协议对接 / 实时性保证 / 断线重连</text>
+
+      <!-- Arrow -->
+      <line x1="360" y1="272" x2="360" y2="290" stroke="#e11d48" stroke-width="1.5" marker-end="url(#arrInt)"/>
+
+      <!-- Layer 4: MES/HMI -->
+      <rect x="70" y="290" width="580" height="72" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+      <text x="360" y="318" text-anchor="middle" fill="#7c3aed" font-size="14" font-weight="700">📊 业务层 · MES/HMI 看板</text>
+      <text x="360" y="340" text-anchor="middle" fill="#6b7280" font-size="11">判定结果 → 质量记录 → 追溯报表 → SPC 控制图 → 报警推送</text>
+      <text x="360" y="356" text-anchor="middle" fill="#9ca3af" font-size="10">⚠️ 数据格式 / 字段映射 / 历史数据归档</text>
+
+      <!-- Arrow -->
+      <line x1="360" y1="362" x2="360" y2="380" stroke="#e11d48" stroke-width="1.5" marker-end="url(#arrInt)"/>
+
+      <!-- Layer 5: 操作工 -->
+      <rect x="70" y="380" width="580" height="72" rx="12" fill="#ffffff" stroke="#f43f5e" stroke-width="2"/>
+      <text x="360" y="408" text-anchor="middle" fill="#f43f5e" font-size="14" font-weight="700">👷 决策层 · 操作工</text>
+      <text x="360" y="430" text-anchor="middle" fill="#6b7280" font-size="11">看报警 → 按SOP处置 → 确认/驳回 → 反馈给系统优化</text>
+      <text x="360" y="446" text-anchor="middle" fill="#9ca3af" font-size="10">⚠️ 可解释性 / 信任 / 报警疲劳 / 操作习惯</text>
+
+      <!-- Right side label -->
+      <text x="680" y="250" text-anchor="middle" fill="#9ca3af" font-size="11" transform="rotate(90, 680, 250)">从物理信号到人的决策</text>
+    </svg>
+    <div class="caption">图 6：产线集成全栈 —— 从相机到操作工，每一层都可能卡住</div>
+  </div>
+
+  <div class="warning">
+    <div class="warning-label">⚠️ 最容易被忽视的：操作工信任</div>
+    <p>算法团队花了三个月训练出一个 98% 精度的模型，满心欢喜推到产线。结果操作工看了一眼："这玩意儿我不信"，然后<strong>全程手动复检</strong>，AI 报警全忽略。</p>
+    <p>为什么？因为<strong>操作工不理解模型在判什么</strong>。如果 AI 只给一个"异常"标签，操作工不知道它看到了什么，自然不信任。解决方案：把模型关注的地方<strong>可视化</strong>出来（热力图/注意力图），让操作工能看到"AI 觉得哪里有问题"。</p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p>集成不是算法团队的活，是<strong>跨团队协作</strong>：算法搞模型、自动化搞 PLC 对接、IT 搞 MES 系统集成、工艺搞业务规则。缺少任何一环都会卡住。<strong>提前把接口定义好，各团队并行推进</strong>，这是最关键的。</p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION 7 ════════════════ -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <div class="badge">07</div>
+    <h2>踩坑清单：十条血泪经验</h2>
+  </div>
+
+  <p class="lead">这一节是实战经验总结，每一条背后都有人中过招。<strong class="strong">建议收藏，每上一条产线前对照检查一遍。</strong></p>
+
+  <!-- ── SVG: 踩坑清单信息图 ── -->
+  <div class="diagram">
+    <svg width="720" height="580" viewBox="0 0 720 580" xmlns="http://www.w3.org/2000/svg">
+      <!-- Title -->
+      <rect x="160" y="10" width="400" height="36" rx="18" fill="rgba(244,63,94,0.15)" stroke="#f43f5e" stroke-width="1.5"/>
+      <text x="360" y="34" text-anchor="middle" fill="#f43f5e" font-size="14" font-weight="700">⚠️ 十大踩坑 · 危险区域</text>
+
+      <!-- Row 1: items 1-2 -->
+      <g transform="translate(20, 60)">
+        <rect x="0" y="0" width="340" height="72" rx="10" fill="#ffffff" stroke="#dc2626" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(248,113,113,0.2)" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#dc2626" font-size="14" font-weight="800">1</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">忽略光照变化</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">白天和晚上的图像天差地别</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 固定光源 + ISP 自动曝光 + 数据增强</text>
+      </g>
+      <g transform="translate(380, 60)">
+        <rect x="0" y="0" width="320" height="72" rx="10" fill="#ffffff" stroke="#dc2626" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(248,113,113,0.2)" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#dc2626" font-size="14" font-weight="800">2</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">标注质量不控</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">垃圾进垃圾出</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 双人交叉标注 + 一致性检测</text>
+      </g>
+
+      <!-- Row 2: items 3-4 -->
+      <g transform="translate(20, 150)">
+        <rect x="0" y="0" width="340" height="72" rx="10" fill="#ffffff" stroke="#dc2626" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(248,113,113,0.2)" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#dc2626" font-size="14" font-weight="800">3</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">只看精度不看速度</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">精度99%但推理500ms，产线用不了</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 训练时就测 FPS，别等到部署</text>
+      </g>
+      <g transform="translate(380, 150)">
+        <rect x="0" y="0" width="320" height="72" rx="10" fill="#ffffff" stroke="#dc2626" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(248,113,113,0.2)" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#dc2626" font-size="14" font-weight="800">4</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">没做影子模式</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">直接上线，出了问题回不去</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 影子模式跑 2 周再切流量</text>
+      </g>
+
+      <!-- Row 3: items 5-6 -->
+      <g transform="translate(20, 240)">
+        <rect x="0" y="0" width="340" height="72" rx="10" fill="#ffffff" stroke="#fbbf24" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(251,191,36,0.2)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#d97706" font-size="14" font-weight="800">5</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">数据闭环断裂</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">上线后再也没人标注新数据</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 定人定责，每月收集 + 标注</text>
+      </g>
+      <g transform="translate(380, 240)">
+        <rect x="0" y="0" width="320" height="72" rx="10" fill="#ffffff" stroke="#fbbf24" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(251,191,36,0.2)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#d97706" font-size="14" font-weight="800">6</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">边缘算力估错</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">买了NPU发现模型不支持该算子</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 先在目标硬件上跑通再采购</text>
+      </g>
+
+      <!-- Row 4: items 7-8 -->
+      <g transform="translate(20, 330)">
+        <rect x="0" y="0" width="340" height="72" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(96,165,250,0.2)" stroke="#2563eb" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#2563eb" font-size="14" font-weight="800">7</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">忽略产线节拍</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">推理速度跟不上每一拍</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 节拍时间 = 推理上限，超了就跳帧</text>
+      </g>
+      <g transform="translate(380, 330)">
+        <rect x="0" y="0" width="320" height="72" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(96,165,250,0.2)" stroke="#2563eb" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#2563eb" font-size="14" font-weight="800">8</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">一个人扛整个链路</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">算法工程师被当成全栈</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 算法+工程+集成至少3人协作</text>
+      </g>
+
+      <!-- Row 5: items 9-10 -->
+      <g transform="translate(20, 420)">
+        <rect x="0" y="0" width="340" height="72" rx="10" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(52,211,153,0.2)" stroke="#059669" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#059669" font-size="14" font-weight="800">9</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">上来就搞大模型</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">一个缺陷检测用不上 GPT</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ 从最小可行模型开始，渐进升级</text>
+      </g>
+      <g transform="translate(380, 420)">
+        <rect x="0" y="0" width="320" height="72" rx="10" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+        <circle cx="32" cy="36" r="18" fill="rgba(52,211,153,0.2)" stroke="#059669" stroke-width="1.5"/>
+        <text x="32" y="41" text-anchor="middle" fill="#059669" font-size="13" font-weight="800">10</text>
+        <text x="64" y="26" fill="#1a1a2e" font-size="12" font-weight="600">没和现场沟通</text>
+        <text x="64" y="44" fill="#6b7280" font-size="10">做出来的东西操作工不用</text>
+        <text x="64" y="60" fill="#9ca3af" font-size="10">→ Day 1 就去找操作工聊需求</text>
+      </g>
+
+      <!-- Bottom summary -->
+      <rect x="120" y="510" width="480" height="44" rx="10" fill="rgba(244,63,94,0.1)" stroke="#f43f5e" stroke-width="1"/>
+      <text x="360" y="530" text-anchor="middle" fill="#e11d48" font-size="12" font-weight="700">🔴 高危（1-4） → 🟡 中危（5-6） → 🔵 低频但致命（7-8） → 🟢 最容易被忽视（9-10）</text>
+      <text x="360" y="548" text-anchor="middle" fill="#6b7280" font-size="10">严重程度从红到绿递减，但绿色那条可能让你整个项目白做</text>
+    </svg>
+    <div class="caption">图 7：十大踩坑清单 —— 按严重程度从红到绿，每条都有对应的预防措施</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">📋 一句话总结每条</div>
+    <p>1. <strong>光照</strong>：固定光源是第一优先级，比模型重要</p>
+    <p>2. <strong>标注</strong>：花 80% 的时间在数据质量上都不为过</p>
+    <p>3. <strong>速度</strong>：训练时就同步测 FPS，别等部署才发现</p>
+    <p>4. <strong>影子</strong>：至少跑两周影子模式再切正式流量</p>
+    <p>5. <strong>闭环</strong>：没有人标注新数据，模型一定会变差</p>
+    <p>6. <strong>算力</strong>：先在目标硬件跑通 ONNX，再批量采购</p>
+    <p>7. <strong>节拍</strong>：推理时间必须低于产线节拍的 70%（留余量）</p>
+    <p>8. <strong>团队</strong>：一个人做全链路 = 一个人扛所有风险</p>
+    <p>9. <strong>模型</strong>：缺陷检测从 ResNet/YOLO 开始，别上来就 Transformer</p>
+    <p>10. <strong>沟通</strong>：和操作工聊一次，比看十篇论文管用</p>
+  </div>
+</section>
+
+<!-- ════════════════ SECTION SUMMARY ════════════════ -->
+<section class="section" id="summary">
+  <div class="section-header">
+    <div class="badge" style="background:linear-gradient(135deg,#f43f5e,#e11d48);">✦</div>
+    <h2>本讲小结</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>部署挑战</th>
+          <th>解决方案</th>
+          <th>关键工具/方法</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>实验室≠产线</td>
+          <td>产线数据采集 + 数据增强</td>
+          <td>固定光源、ISP、Domain Adaptation</td>
+        </tr>
+        <tr>
+          <td>模型太大/太慢</td>
+          <td>量化 + 剪枝</td>
+          <td>PTQ → QAT → Pruning</td>
+        </tr>
+        <tr>
+          <td>算力放在哪</td>
+          <td>边缘-云分层部署</td>
+          <td>Jetson(边缘主力) + GPU(云端训练)</td>
+        </tr>
+        <tr>
+          <td>模型逐渐变差</td>
+          <td>数据闭环</td>
+          <td>监控 → 收集 → 标注 → 重训练 → 部署</td>
+        </tr>
+        <tr>
+          <td>部署靠人肉</td>
+          <td>MLOps 自动化</td>
+          <td>MLflow + DVC + CI/CD</td>
+        </tr>
+        <tr>
+          <td>系统集成卡壳</td>
+          <td>分层对接 + 早期验证</td>
+          <td>OPC-UA、MQTT、MES API</td>
+        </tr>
+        <tr>
+          <td>操作工不信任</td>
+          <td>可解释性 + 影子模式</td>
+          <td>热力图、注意力可视化</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">🏭 落地提示</div>
+    <p><strong>模型精度是"必要条件"，但不是"充分条件"。</strong>真正决定项目能不能交付的，是量化后的精度是否够用、推理速度是否跟得上、系统能不能集成、操作工愿不愿意用。这四条全部通过，才算真正"落地"。</p>
+  </div>
+</section>
+
+<!-- ════════════════ NAV FOOTER ════════════════ -->
+<nav class="nav-footer">
+  <a href="04_工业AI五大场景实战.html">← 上一篇：工业AI五大场景实战</a>
+  <a href="index.html">🏠 返回目录</a>
+</nav>
+
+<!-- ════════════════ EPILOGUE ════════════════ -->
+<div class="epilogue">
+  <h3>系列终章 · 从神经元到产线</h3>
+  <div class="journey">
+    <span class="j1">01 神经网络</span>
+    <span class="j2">02 视觉模型</span>
+    <span class="j3">03 时序与表格</span>
+    <span class="j4">04 五大场景</span>
+    <span class="j5">05 产线落地</span>
+  </div>
+  <p>五讲走完，你从<strong>一个神经元怎么投票</strong>开始，学会了<strong>卷积看见缺陷</strong>、<strong>LSTM 听懂振动</strong>、<strong>五大场景怎么打仗</strong>，最后把这一切真正<strong>搬到产线上运行</strong>。</p>
+  <p>这就是工业AI的完整闭环 —— <strong>从神经元到产线，你走过的这条路就是工业AI的完整闭环</strong>。</p>
+  <p style="color:var(--accent2); font-weight:600; margin-top:20px;">不是会训模型就够了，能稳定跑在产线上的模型，才叫"落了地"。</p>
+</div>
+
+</div>
+</body>
+</html>
