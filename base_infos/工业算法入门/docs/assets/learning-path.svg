@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 350" role="img" aria-labelledby="title desc">
+<title id="title">工业 AI 学习主线</title>
+<desc id="desc">从现场问题出发，依次经历数据采集、算法选型、模型判断、人工复核与执行、反馈数据，并进入下一轮训练。</desc>
+<style>
+  text{font-family:'PingFang SC','Noto Sans SC',Arial,sans-serif;fill:#172033}.title{font-size:28px;font-weight:800}.head{font-size:18px;font-weight:800}.sub{font-size:14px;fill:#526176}.step{fill:#fff;stroke-width:3}
+</style>
+<defs><linearGradient id="bg" x1="0" x2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#f7f5ff"/></linearGradient><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10z" fill="#64748b"/></marker></defs>
+<rect width="1200" height="350" rx="28" fill="url(#bg)"/>
+<text x="600" y="48" text-anchor="middle" class="title">工业 AI：从现场问题走到持续改进</text>
+<path d="M205 170H250M405 170H450M605 170H650M805 170H850M1005 170H1050" fill="none" stroke="#64748b" stroke-width="4" marker-end="url(#arrow)"/>
+<g text-anchor="middle">
+ <rect x="45" y="115" width="160" height="110" rx="18" class="step" stroke="#2563eb"/><text x="125" y="154" class="head" fill="#1d4ed8">① 现场问题</text><text x="125" y="184" class="sub">停机 · 缺陷 · 能耗</text>
+ <rect x="250" y="115" width="155" height="110" rx="18" class="step" stroke="#06b6d4"/><text x="327" y="154" class="head" fill="#0e7490">② 数据采集</text><text x="327" y="184" class="sub">图像 · 振动 · 表格</text>
+ <rect x="450" y="115" width="155" height="110" rx="18" class="step" stroke="#8b5cf6"/><text x="527" y="154" class="head" fill="#6d28d9">③ 算法选型</text><text x="527" y="184" class="sub">视觉 · 时序 · 树模型</text>
+ <rect x="650" y="115" width="155" height="110" rx="18" class="step" stroke="#f59e0b"/><text x="727" y="154" class="head" fill="#9a4d00">④ 模型判断</text><text x="727" y="184" class="sub">检测 · 预测 · 优化</text>
+ <rect x="850" y="115" width="155" height="110" rx="18" class="step" stroke="#10b981"/><text x="927" y="154" class="head" fill="#047857">⑤ 复核与执行</text><text x="927" y="184" class="sub">人工确认 · 安全逻辑</text>
+ <rect x="1050" y="115" width="120" height="110" rx="18" class="step" stroke="#ef4444"/><text x="1110" y="154" class="head" fill="#b91c1c">⑥ 反馈</text><text x="1110" y="184" class="sub">新数据</text>
+</g>
+<path d="M1110 225V286H527V225" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#arrow)"/>
+<text x="820" y="315" text-anchor="middle" class="sub" fill="#6d28d9">把复核结果和新样本带回训练：模型不是一次性项目，而是持续的现场闭环。</text>
+</svg>
