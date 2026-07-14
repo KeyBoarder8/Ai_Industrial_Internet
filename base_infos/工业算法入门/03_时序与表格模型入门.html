@@ -260,7 +260,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
 </style>
 <link rel="stylesheet" href="course-ui.css">
 </head>
-<body>
+<body class="has-course-sidebar"><aside class="course-sidebar"><div class="course-side-head"><div class="day">第 3 讲 / 数据</div><h2>时序与表格模型</h2><p>预测、预警与异常检测</p></div><div class="course-side-group"><div class="course-side-title">本讲章节</div><a class="course-side-link active" href="#s1">01 工厂数据</a><a class="course-side-link" href="#s2">02 RNN / LSTM</a><a class="course-side-link" href="#s3">03 Transformer</a><a class="course-side-link" href="#s4">04 异常检测</a></div><div class="course-side-group"><div class="course-side-title">课程路径</div><a class="course-side-link" href="index.html">学习路径</a><a class="course-side-link" href="04_工业AI五大场景实战.html">下一讲：场景</a><a class="course-side-link" href="06_算法与资讯雷达.html">前沿雷达</a></div></aside>
 <nav class="course-nav"><div class="brand">工业算法<i>×</i>入门</div><a href="index.html">课程地图</a><a href="04_工业AI五大场景实战.html">下一讲：场景</a><a href="06_算法与资讯雷达.html">资讯雷达</a></nav>
 <div class="page">
 
@@ -284,6 +284,11 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   </div>
 
   <p class="lead">上一篇我们学了视觉模型，处理的是图片。但工厂里 <strong class="strong">80% 的数据不是图片</strong>——它们是随时间变化的信号，或是一行行的属性表格。</p>
+
+  <figure class="concept-visual">
+    <img src="visuals/predictive-maintenance.png" alt="预测性维护场景：电机的振动与温度传感器把信号传入边缘设备，并产生早期预警">
+    <figcaption>先建立直觉：传感器把设备的“声音”和“体温”变成时间序列；模型再从变化趋势中找出早期预警。</figcaption>
+  </figure>
 
   <p>工厂里最常见的三种数据形态：</p>
 
@@ -565,7 +570,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   </ul>
 
   <!-- ── SVG: LSTM cell ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="680" height="400" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrP3" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
@@ -673,6 +678,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
       <!-- Output arrows legend -->
       <text x="340" y="375" text-anchor="middle" fill="#9ca3af" font-size="10">σ = Sigmoid，输出 0~1 之间的"开关度"：0=完全关闭，1=完全打开</text>
     </svg>
+    <img src="diagram/lstm-gates.svg" alt="LSTM 单元：Cell State 是信息高速公路，三个门分别删旧、写新和读出">
     <div class="caption">图 4：LSTM 单元 —— Cell State 是信息高速公路，三个门控制"删旧/加新/读出"</div>
   </div>
 
@@ -757,7 +763,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   <h3 style="color:#1a1a2e; margin:28px 0 12px; font-size:1.05rem;">注意力箭头：谁跟谁最相关</h3>
 
   <!-- ── SVG: 5 time-steps with attention arrows ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="680" height="220" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
       <!-- 5 time step nodes -->
       <g>
@@ -804,6 +810,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
       <text x="340" y="170" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600">注意力自动发现：3小时前微变 → 跟当前异常最相关</text>
       <text x="340" y="190" text-anchor="middle" fill="#6b7280" font-size="10">线越粗 = 注意力权重越大 = 两者关系越紧密</text>
     </svg>
+    <img src="diagram/attention-timeline.svg" alt="注意力机制：当前异常直接关联不同历史时刻，连线越粗代表关系越强">
     <div class="caption">图 6：注意力机制 —— 每个时间步直接看所有其他步，箭头粗细表示相关程度</div>
   </div>
 
@@ -827,7 +834,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   <p>思路很简单：让模型学会"正常长什么样"。一旦来了一个"重构不回去"的样本，那就是异常。</p>
 
   <!-- ── SVG: Autoencoder architecture ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="720" height="280" viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrP5" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
@@ -897,6 +904,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
       </g>
       <line x1="585" y1="200" x2="585" y2="215" stroke="#d97706" stroke-width="1"/>
     </svg>
+    <img src="diagram/autoencoder-detection.svg" alt="Autoencoder 异常检测：压缩、重建、计算误差并按阈值判断异常">
     <div class="caption">图 7：Autoencoder 异常检测 —— Encoder 压缩→Decoder 重建→误差超过阈值=异常</div>
   </div>
 
@@ -1103,7 +1111,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   <h3 style="color:#1a1a2e; margin:28px 0 12px; font-size:1.05rem;">梯度提升（LightGBM）：树1学数据，树2学残差，树3再学残差...</h3>
 
   <!-- ── SVG: Sequential tree learning ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="680" height="240" viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg">
       <!-- Data -->
       <g transform="translate(20,40)">
@@ -1162,6 +1170,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
         </marker>
       </defs>
     </svg>
+    <img src="diagram/gradient-boosting.svg" alt="梯度提升：第一棵树先预测，后续树依次学习前一轮残差，最终相加得到结果">
     <div class="caption">图 11：梯度提升 —— 树1学数据，树2学残差，树3再学残差...逐步逼近真实值</div>
   </div>
 
@@ -1323,7 +1332,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   <p class="lead">学了这么多模型，什么时候用哪个？这张决策树帮你快速定位：</p>
 
   <!-- ── SVG: Decision tree for model selection ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="720" height="520" viewBox="0 0 720 520" xmlns="http://www.w3.org/2000/svg">
       <!-- Root: 数据类型? -->
       <rect x="270" y="10" width="180" height="44" rx="12" fill="#ffffff" stroke="#8b5cf6" stroke-width="2.5"/>
@@ -1404,6 +1413,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
       <text x="360" y="480" text-anchor="middle" fill="#7c3aed" font-size="11" font-weight="600">选择口诀：图像→CNN，时序→LSTM/Transformer，表格→LightGBM</text>
       <text x="360" y="496" text-anchor="middle" fill="#6b7280" font-size="10">故障少→异常检测，要解释→树+SHAP，要实时→轻量模型</text>
     </svg>
+    <img src="diagram/model-selection.svg" alt="工业算法选型：按数据类型、故障样本量和交付约束选择视觉、时序或表格模型">
     <div class="caption">图 13：模型选择决策树 —— 根据数据类型、样本量、可解释性需求、实时性需求快速定位</div>
   </div>
 

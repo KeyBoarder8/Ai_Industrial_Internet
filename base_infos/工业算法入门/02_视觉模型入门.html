@@ -336,7 +336,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
 </style>
 <link rel="stylesheet" href="course-ui.css">
 </head>
-<body>
+<body class="has-course-sidebar"><aside class="course-sidebar"><div class="course-side-head"><div class="day">第 2 讲 / 视觉</div><h2>视觉模型入门</h2><p>质检、检测、分割与异常</p></div><div class="course-side-group"><div class="course-side-title">本讲章节</div><a class="course-side-link active" href="#s1">01 工厂为什么需要看见</a><a class="course-side-link" href="#s2">02 CNN</a><a class="course-side-link" href="#s3">03 YOLO / ViT</a><a class="course-side-link" href="#s4">04 分割与异常检测</a></div><div class="course-side-group"><div class="course-side-title">课程路径</div><a class="course-side-link" href="index.html">学习路径</a><a class="course-side-link" href="03_时序与表格模型入门.html">下一讲：时序</a><a class="course-side-link" href="06_算法与资讯雷达.html">前沿雷达</a></div></aside>
 <nav class="course-nav"><div class="brand">工业算法<i>×</i>入门</div><a href="index.html">课程地图</a><a href="03_时序与表格模型入门.html">下一讲：时序</a><a href="06_算法与资讯雷达.html">资讯雷达</a></nav>
 <div class="page">
 
@@ -360,6 +360,11 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   </div>
 
   <p class="lead">如果第一讲是给工厂装上了"大脑"，那这一讲就是给工厂装上<strong class="strong">"眼睛"</strong>。而机器视觉，正是工业AI落地最成熟、最广泛的领域。</p>
+
+  <figure class="concept-visual">
+    <img src="visuals/machine-vision-inspection.png" alt="机器视觉质检工位：相机检查传送带上的零件，边缘设备分析可疑缺陷">
+    <figcaption>先建立直觉：相机负责“看”，边缘设备负责“判断”，质检规则负责决定下一步怎么做。</figcaption>
+  </figure>
 
   <p>想象一个汽车零部件车间的质检工位：工人师傅每天盯着流水线上的零件，寻找裂纹、毛刺、色差……一天8小时，一秒都不能走神。这类工作有三个致命痛点：</p>
 
@@ -464,7 +469,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
     <li><strong>深层</strong>看<strong>完整部件</strong>——螺丝、齿轮、整个零件有没有缺陷</li>
   </ol>
 
-  <div class="svg-wrap">
+  <div class="svg-wrap diagram--redraw">
     <svg width="720" height="320" viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrC2" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
@@ -529,6 +534,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
         <path d="M245,52 L270,52" fill="none" stroke="#9ca3af" stroke-width="1" marker-end="url(#arrC2)"/>
       </g>
     </svg>
+    <img src="diagram/cnn-feature-pipeline.svg" alt="CNN 特征提取：原始图像经过卷积与池化，最后完成缺陷分类或检测">
     <div class="caption">图 2：CNN 特征提取管线 —— 原始图像逐层压缩，特征从简单到复杂：边缘 → 纹理 → 部件 → 分类</div>
   </div>
 
@@ -909,7 +915,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
 
   <p>关键在于<strong class="strong">跳跃连接</strong>——它的角色和 ResNet 的捷径类似，但做得更彻底：不只是加法，而是把编码器的特征<strong>拼接</strong>（concatenate）到解码器上，让解码器既有高层语义，又有低层细节。</p>
 
-  <div class="svg-wrap">
+  <div class="svg-wrap diagram--redraw">
     <svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrC6" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
@@ -1029,6 +1035,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
         <text x="575" y="68" text-anchor="middle" fill="#06b6d4" font-size="9">裂纹长度: 5.1mm</text>
       </g>
     </svg>
+    <img src="diagram/unet-path.svg" alt="U-Net 流程：编码压缩、跳跃连接、解码还原并输出缺陷掩码">
     <div class="caption">图 6：U-Net 架构 —— 编码器压缩提炼，解码器扩张还原，跳跃连接保留细节，输出像素级分割图</div>
   </div>
 
@@ -1073,7 +1080,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
 
   <p>用工厂类比：<strong class="strong">新手质检员上岗前看了三天好产品</strong>，脑子里记住了"正常长什么样"。之后在产线上，看到任何"不对劲"的就标出来——即使他从没见过这种缺陷。</p>
 
-  <div class="svg-wrap">
+  <div class="svg-wrap diagram--redraw">
     <svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arrC7" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
@@ -1146,6 +1153,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
         <text x="595" y="55" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="600">TensorRT 加速</text>
       </g>
     </svg>
+    <img src="diagram/patchcore-flow.svg" alt="PatchCore 流程：从正常样本提取特征，建立记忆库，再用距离判断异常">
     <div class="caption">图 7：PatchCore 全流程 —— 预训练特征提取 → 正常记忆库 → 距离评分 → 异常热图输出</div>
   </div>
 

@@ -270,7 +270,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
 </style>
 <link rel="stylesheet" href="course-ui.css">
 </head>
-<body>
+<body class="has-course-sidebar"><aside class="course-sidebar"><div class="course-side-head"><div class="day">第 1 讲 / 基础</div><h2>从零看懂神经网络</h2><p>20 分钟 · 建立模型直觉</p></div><div class="course-side-group"><div class="course-side-title">本讲章节</div><a class="course-side-link active" href="#s1">01 神经元</a><a class="course-side-link" href="#s2">02 组成网络</a><a class="course-side-link" href="#s3">03 前向传播</a><a class="course-side-link" href="#s4">04 反向传播</a></div><div class="course-side-group"><div class="course-side-title">课程路径</div><a class="course-side-link" href="index.html">学习路径</a><a class="course-side-link" href="02_视觉模型入门.html">下一讲：视觉</a><a class="course-side-link" href="06_算法与资讯雷达.html">前沿雷达</a></div></aside>
 <nav class="course-nav"><div class="brand">工业算法<i>×</i>入门</div><a href="index.html">课程地图</a><a href="02_视觉模型入门.html">下一讲：视觉</a><a href="06_算法与资讯雷达.html">资讯雷达</a></nav>
 <div class="page">
 
@@ -651,7 +651,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   <p>🎯 <strong>射箭</strong>：你射了一箭，偏了。看偏了多少（误差），然后调整姿势（权重），再射一箭。反复调整，越射越准。</p>
 
   <!-- ── SVG: 反向传播 ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="720" height="360" viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
       <!-- Forward path (top, faded) -->
       <text x="360" y="30" text-anchor="middle" fill="#9ca3af" font-size="11">← 前向传播（数据流入） → </text>
@@ -711,6 +711,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
         </marker>
       </defs>
     </svg>
+    <img src="diagram/backpropagation-flow.svg" alt="反向传播流程：数据向前流动，误差向后回传并更新权重">
     <div class="caption">图 4：反向传播 —— 误差从输出层往回传，沿途调整每个权重</div>
   </div>
 
@@ -767,7 +768,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
   <p class="lead">把前向传播和反向传播串起来，就是一个完整的训练循环。</p>
 
   <!-- ── SVG: 训练循环 ── -->
-  <div class="diagram">
+  <div class="diagram diagram--redraw">
     <svg width="680" height="300" viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg">
       <!-- Center: loop arrow -->
       <ellipse cx="340" cy="150" rx="250" ry="110" fill="none" stroke="#c8cad0" stroke-width="1" stroke-dasharray="6 4"/>
@@ -814,6 +815,7 @@ td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
         </marker>
       </defs>
     </svg>
+    <img src="diagram/training-loop.svg" alt="训练循环：输入数据、前向预测、计算误差、反向更新并重复">
     <div class="caption">图 6：训练循环 —— 喂数据 → 前向传播 → 算误差 → 反向传播 → 更新权重 → 重复</div>
   </div>
 
